@@ -33,6 +33,8 @@ function computeHash(password, salt, fn) {
 function storeUser(email, username, password, salt, fn) {
 	// Bytesize
 	var len = 128;
+	var infoTable = config.DDB_TABLE + 'Info';
+	var detailTable = config.DDB_TABLE + 'Detail';
 	crypto.randomBytes(len, function(err, token) {
 		if (err) return fn(err);
 		token = token.toString('hex');
@@ -49,31 +51,32 @@ function storeUser(email, username, password, salt, fn) {
 			ConditionExpression: 'attribute_not_exists (email)'
 		}, function(err, data) {
 			if (err) return fn(err);
-			else fn(null, token);
-		});
-		//user info + detail creation
-		dynamodb.putItem({
-			TableName: config.DDB_TABLE + 'Info',
-			Item: {
-				username: { S: username },
-				name: { S: ''}
-			},
-			ConditionExpression: 'attribute_not_exists (username)'
-		}, function(err, data) {
-			if (err) return fn(err);
-			else fn(null, token);
-		});
-		dynamodb.putItem({
-			TableName: config.DDB_TABLE + 'Details',
-			Item: {
-				username: { S: username },
-				name: { S: ''},
-				profileImage: { S: ''} //need to add default profile image
-			},
-			ConditionExpression: 'attribute_not_exists (username)'
-		}, function(err, data) {
-			if (err) return fn(err);
-			else fn(null, token);
+			else { 
+				fn(null, token);
+				//user info + detail creation
+				dynamodb.putItem({
+					TableName: infoTable,
+					Item: {
+						username: { S: username },
+						name: { S: username}
+					},
+					ConditionExpression: 'attribute_not_exists (username)'
+				}, function(err, data) {
+					if (err) return fn(err);
+					else fn(null, token);
+				});
+				dynamodb.putItem({
+					TableName: detailTable,
+					Item: {
+						username: { S: username },
+						//profileImage: { S: ''} //need to add default profile image
+					},
+					ConditionExpression: 'attribute_not_exists (username)'
+				}, function(err, data) {
+					if (err) return fn(err);
+					else fn(null, token);
+				});
+			}
 		});
 	});
 }
