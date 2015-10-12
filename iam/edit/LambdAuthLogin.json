@@ -1,0 +1,27 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "dynamodb:GetItem"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:dynamodb:us-east-1:362398529335:table/thePlugUsers"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cognito-identity:GetOpenIdTokenForDeveloperIdentity"
+            ],
+            "Resource": "arn:aws:cognito-identity:us-east-1:362398529335:identitypool/us-east-1:2324489a-7dcf-4943-be12-f57514126726"
+        },
+        {
+            "Sid": "",
+            "Resource": "*",
+            "Action": [
+                "logs:*"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}

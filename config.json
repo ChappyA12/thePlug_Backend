@@ -1,0 +1,14 @@
+{
+  "AWS_ACCOUNT_ID": "362398529335",
+  "REGION": "us-east-1",
+  "BUCKET": "the-plug-html",
+  "MAX_AGE": "10",
+  "DDB_TABLE": "thePlugUsers",
+  "IDENTITY_POOL_NAME": "thePlugAuth",
+  "DEVELOPER_PROVIDER_NAME": "login.thePlug.thePlug",
+  "EXTERNAL_NAME": "The Plug Authentication",
+  "EMAIL_SOURCE": "thePlugAuthentication@gmail.com",
+  "VERIFICATION_PAGE": "http://the-plug-html.s3.amazonaws.com/verify.html",
+  "RESET_PAGE": "http://the-plug-html.s3.amazonaws.com/reset.html",
+  "IDENTITY_POOL_ID": "us-east-1:2324489a-7dcf-4943-be12-f57514126726"
+}
