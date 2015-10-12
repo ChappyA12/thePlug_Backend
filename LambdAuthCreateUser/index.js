@@ -9,6 +9,7 @@ var config = require('./config.json');
 // Get reference to AWS clients
 var dynamodb = new AWS.DynamoDB();
 var ses = new AWS.SES();
+var lambda = new AWS.Lambda();
 
 function computeHash(password, salt, fn) {
 	// Bytesize
@@ -124,20 +125,38 @@ exports.handler = function(event, context) {
 				if (err) {
 					if (err.code == 'ConditionalCheckFailedException') {
 						// userId already found
-						context.succeed({
-							created: false
-						});
-					} else {
-						context.fail('Error in storeUser: ' + err);
-					}
+						context.succeed({ created: false });
+					} else { context.fail('Error in storeUser: ' + err); }
 				} else {
 					sendVerificationEmail(email, token, function(err, data) {
 						if (err) {
 							context.fail('Error in sendVerificationEmail: ' + err);
-						} else {
-							context.succeed({
-								created: true
+						} else { //create fully succeded
+							var payload = {
+        						email: email,
+        						password: event.password
+      						};
+							lambda.invoke({
+ 								FunctionName: 'LambdAuthLogin',
+  								Payload: JSON.stringify(payload) // pass params
+							}, function(err, data) {
+					  			if (err) {  context.fail('login error in createUser', err, err.stack);  }
+ 								else { 
+									var output = JSON.parse(data.Payload);
+									context.succeed({
+										created: true,
+										login: output.login,
+										identityId: output.identityId,
+										token: output.token, 
+										username:  output.username
+									}); 
+								}
+								context.fail('unknown login error in createUser'); 
 							});
+							//context.fail('login funtion not called error'); 
+							//context.succeed({
+							//		created: true
+							//});
 						}
 					});
 				}

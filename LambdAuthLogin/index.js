@@ -80,14 +80,7 @@ exports.handler = function(event, context) {
 				context.succeed({
 					login: false
 				});
-			} else if (!verified) {
-				// User not verified
-				console.log('User not verified: ' + email);
-				context.succeed({
-					login: true,
-					verified: false
-				});
-			} else {
+			}  else {
 				computeHash(clearPassword, salt, function(err, salt, hash) {
 					if (err) {
 						context.fail('Error in hash: ' + err);
@@ -102,7 +95,7 @@ exports.handler = function(event, context) {
 								} else {
 									context.succeed({
 										login: true,
-										verified: true,
+										verified: verified, 
 										identityId: identityId,
 										token: token,
 										username:  username

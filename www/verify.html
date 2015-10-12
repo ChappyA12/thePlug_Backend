@@ -12,13 +12,15 @@
   });
   var lambda = new AWS.Lambda();
 	</script>
-  <h1>Sample Verify User Page</h1>
+  <h1>The Plug User Authentication</h1>
   <div id="info">
-  Verifying...
+  Verifying User...
   </div>
-	<div class="center">
+	 <!--
+     <div class="center">
 		<a href="index.html">Back</a>
-  </div>
+  	</div>
+    -->
   <script>
   var info = document.getElementById('info');
   function getUrlParams() {
@@ -36,7 +38,7 @@
   function init() {
     var urlParams = getUrlParams();
     if (!('email' in urlParams) || !('verify' in urlParams)) {
-      info.innerHTML = 'Please specify email and verify token in the URL.';
+      info.innerHTML = 'Malformed request. Please try agian (specify email and token in URL)';
     } else {
       var input = {
         email: urlParams['email'],
@@ -50,9 +52,9 @@
         else {
           var output = JSON.parse(data.Payload);
           if (output.verified) {
-            info.innerHTML = 'User ' + input.email + ' has been <b>Verified</b>, thanks!'
+            info.innerHTML = 'You (' + input.email + ') have been <b>Verified</b>!'
           } else {
-            info.innerHTML = 'User ' + input.email + ' has <b>not</b> been Verified, sorry.'
+            info.innerHTML = 'Verification for ' + input.email + '  <b>Failed</b>. Please try again later.'
           }
         }
       });
